@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elimination | Josh Tutoring & Test Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; min-width: 250px; background: #042C53; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { padding: 24px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo a { text-decoration: none; }
+    .logo-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; line-height: 1.3; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .nav { flex: 1; padding: 12px 0; }
+    .domain-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 14px 18px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-item.active { background: rgba(55,138,221,0.18); color: #fff; border-left: 2px solid #378ADD; }
+    .nav-item.sub { padding-left: 32px; font-size: 12px; }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); min-width: 6px; }
+    .nav-item.active .nav-dot { background: #378ADD; }
+    .nav-item.done .nav-dot { background: #1D9E75; }
+    .progress-wrap { padding: 12px 18px 20px; }
+    .progress-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 4px; height: 4px; }
+    .progress-fill { height: 4px; border-radius: 4px; background: #378ADD; width: 50%; }
+    .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: #fff; border-bottom: 1px solid #e8eaf0; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { font-size: 13px; color: #888; }
+    .breadcrumb span { color: #185FA5; font-weight: 500; }
+    .diff-filters { display: flex; gap: 6px; }
+    .diff-btn { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; cursor: pointer; border: 1px solid #dde; background: #f5f5f8; color: #888; }
+    .diff-btn.easy.on { background: #EAF3DE; color: #3B6D11; border-color: #97C459; }
+    .diff-btn.med.on  { background: #FAEEDA; color: #854F0B; border-color: #EF9F27; }
+    .diff-btn.hard.on { background: #FCEBEB; color: #A32D2D; border-color: #F09595; }
+    .content { padding: 36px 40px; max-width: 860px; }
+    .lesson-tag { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: #185FA5; font-weight: 500; margin-bottom: 8px; }
+    .lesson-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: #042C53; margin-bottom: 10px; line-height: 1.2; }
+    .lesson-desc { font-size: 15px; color: #555; line-height: 1.7; max-width: 620px; margin-bottom: 32px; }
+    .divider { height: 1px; background: #e8eaf0; margin: 28px 0; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .concept-box { background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .concept-box p { font-size: 14px; color: #0C447C; line-height: 1.7; }
+    .concept-box code { background: rgba(24,95,165,0.12); padding: 1px 6px; border-radius: 3px; font-size: 13px; font-family: monospace; }
+    .tip-box { background: #EAF3DE; border-left: 3px solid #3B6D11; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .tip-box p { font-size: 14px; color: #27500A; line-height: 1.7; }
+    .steps-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .step-item { display: flex; gap: 14px; align-items: flex-start; }
+    .step-circle { min-width: 32px; height: 32px; border-radius: 50%; background: #185FA5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+    .step-text { font-size: 14px; color: #333; line-height: 1.65; padding-top: 5px; }
+    .step-text strong { color: #042C53; }
+    .example-box { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .example-header { background: #f5f6fa; border-bottom: 1px solid #e8eaf0; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #555; letter-spacing: 0.05em; text-transform: uppercase; }
+    .example-body { padding: 18px; }
+    .example-equations { background: #f0f4ff; border-radius: 8px; padding: 12px 16px; font-family: monospace; font-size: 15px; color: #042C53; margin-bottom: 16px; line-height: 1.9; }
+    .step { display: flex; gap: 12px; margin-bottom: 12px; font-size: 14px; color: #333; line-height: 1.6; }
+    .step-num { min-width: 24px; height: 24px; background: #185FA5; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-top: 1px; }
+    .step-answer { font-weight: 600; color: #185FA5; font-size: 15px; }
+    .problem { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .problem-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8f9fc; border-bottom: 1px solid #e8eaf0; }
+    .problem-num { font-size: 13px; font-weight: 600; color: #333; }
+    .diff-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .diff-tag.easy { background: #EAF3DE; color: #3B6D11; }
+    .diff-tag.med  { background: #FAEEDA; color: #854F0B; }
+    .diff-tag.hard { background: #FCEBEB; color: #A32D2D; }
+    .problem-body { padding: 16px; }
+    .problem-body p { font-size: 14px; color: #222; line-height: 1.7; margin-bottom: 14px; }
+    .choices { display: flex; flex-direction: column; gap: 8px; }
+    .choice { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1px solid #e0e2ea; border-radius: 8px; font-size: 14px; color: #333; cursor: pointer; transition: all 0.12s; }
+    .choice:hover { background: #f0f4ff; border-color: #b5d4f4; }
+    .choice.correct { background: #EAF3DE; border-color: #639922; color: #1e4d08; pointer-events: none; }
+    .choice.wrong   { background: #FCEBEB; border-color: #F09595; color: #791F1F; pointer-events: none; }
+    .choice.disabled { pointer-events: none; opacity: 0.6; }
+    .choice-letter { width: 26px; height: 26px; border-radius: 50%; background: #eef0f5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; min-width: 26px; color: #555; }
+    .choice.correct .choice-letter { background: #639922; color: #fff; }
+    .choice.wrong   .choice-letter { background: #E24B4A; color: #fff; }
+    .explanation { display: none; margin-top: 14px; padding: 12px 14px; background: #f0f4ff; border-radius: 8px; font-size: 13px; color: #0C447C; line-height: 1.65; border-left: 3px solid #185FA5; }
+    .spr-note { font-size: 12px; color: #888; font-style: italic; margin-bottom: 8px; }
+    .spr-input-wrap { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .spr-input { border: 1px solid #dde; border-radius: 8px; padding: 8px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 160px; outline: none; }
+    .spr-submit { padding: 8px 16px; background: #185FA5; color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+    .lesson-footer { margin-top: 48px; padding: 20px 40px; background: #fff; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #dde; background: #fff; color: #333; text-decoration: none; display: inline-block; }
+    .nav-btn:hover { background: #f5f6fa; }
+    .nav-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .footer-indicator { font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo"><a href="../../index.html"><div class="logo-title">Josh Tutoring<br>&amp; Test Prep</div><div class="logo-sub">SAT Curriculum</div></a></div>
+  <div class="nav">
+    <div class="domain-label">Algebra — Systems of Equations</div>
+    <a class="nav-item sub done" href="1-what-is-a-system.html"><div class="nav-dot"></div> 1. What is a System?</a>
+    <a class="nav-item sub done" href="2-substitution.html"><div class="nav-dot"></div> 2. Substitution</a>
+    <a class="nav-item sub active" href="3-elimination.html"><div class="nav-dot"></div> 3. Elimination</a>
+    <a class="nav-item sub" href="4-sat-shortcut.html"><div class="nav-dot"></div> 4. SAT Shortcut</a>
+    <a class="nav-item sub" href="5-desmos.html"><div class="nav-dot"></div> 5. Solving with Desmos</a>
+    <a class="nav-item sub" href="6-mixed-practice.html"><div class="nav-dot"></div> 6. Mixed Practice</a>
+    <div class="domain-label">Other Topics</div>
+    <a class="nav-item" href="../../index.html"><div class="nav-dot"></div> ← Back to all topics</a>
+  </div>
+  <div class="progress-wrap"><div class="progress-label">Lesson 3 of 6</div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Algebra › Systems of Equations › <span>Elimination</span></div>
+    <div class="diff-filters">
+      <button class="diff-btn easy on" onclick="toggleDiff('easy')">Easy</button>
+      <button class="diff-btn med on" onclick="toggleDiff('med')">Medium</button>
+      <button class="diff-btn hard on" onclick="toggleDiff('hard')">Hard</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="lesson-tag">Algebra · Systems of Equations · Lesson 3</div>
+    <h1 class="lesson-title">Solving by Elimination</h1>
+    <p class="lesson-desc">Elimination is often the fastest method on the SAT. Instead of isolating a variable, you add or subtract the equations to make one variable disappear entirely.</p>
+    <div class="divider"></div>
+    <div class="section-title">When to Use Elimination</div>
+    <div class="tip-box"><p><strong>Best for:</strong> Systems where both equations are in <code>Ax + By = C</code> form, especially when coefficients already match or are easy to match. Also great when the SAT asks for a combination like x + y (see Lesson 4!).</p></div>
+    <div class="divider"></div>
+    <div class="section-title">The 4 Steps</div>
+    <div class="steps-list">
+      <div class="step-item"><div class="step-circle">1</div><div class="step-text"><strong>Choose a variable to eliminate.</strong> Pick the variable whose coefficients are easiest to make opposites.</div></div>
+      <div class="step-item"><div class="step-circle">2</div><div class="step-text"><strong>Multiply</strong> one or both equations so the chosen variable's coefficients are opposites (e.g., +3y and −3y).</div></div>
+      <div class="step-item"><div class="step-circle">3</div><div class="step-text"><strong>Add the equations.</strong> One variable cancels out, leaving one equation with one variable.</div></div>
+      <div class="step-item"><div class="step-circle">4</div><div class="step-text"><strong>Solve, then back-substitute</strong> to find the other variable.</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-title">Worked Example 1 — Coefficients Already Match</div>
+    <div class="example-box">
+      <div class="example-header">Example 1</div>
+      <div class="example-body">
+        <div class="example-equations">2x + 3y = 12<br>4x − 3y = 6</div>
+        <div class="step"><div class="step-num">1</div><div>The y-coefficients are already opposites: +3y and −3y. No multiplication needed!</div></div>
+        <div class="step"><div class="step-num">2</div><div>Add the equations: <strong>(2x + 3y) + (4x − 3y) = 12 + 6 → 6x = 18</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div>Solve: <strong>x = 3</strong></div></div>
+        <div class="step"><div class="step-num">4</div><div>Back-substitute into equation 1: <strong>2(3) + 3y = 12 → 3y = 6 → y = 2</strong></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-answer">Answer: (x, y) = (3, 2)</div></div>
+      </div>
+    </div>
+    <div class="section-title">Worked Example 2 — Must Multiply First</div>
+    <div class="example-box">
+      <div class="example-header">Example 2</div>
+      <div class="example-body">
+        <div class="example-equations">3x + 2y = 16<br>x + y = 7</div>
+        <div class="step"><div class="step-num">1</div><div>Eliminate y. Multiply equation 2 by −2: <strong>−2x − 2y = −14</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div>Add to equation 1: <strong>(3x + 2y) + (−2x − 2y) = 16 + (−14) → x = 2</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div>Back-substitute: <strong>2 + y = 7 → y = 5</strong></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-answer">Answer: (x, y) = (2, 5)</div></div>
+      </div>
+    </div>
+    <div class="concept-box"><p><strong>Pro tip:</strong> You can also eliminate by <em>subtracting</em> equations instead of adding — just be careful with signs. Multiplying by −1 and then adding is the safest approach to avoid sign errors.</p></div>
+    <div class="divider"></div>
+    <div class="section-title">Practice Problems</div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 1</span><span class="diff-tag easy">Easy</span></div>
+      <div class="problem-body">
+        <p>What is the solution to the system?<br><strong>x + y = 8</strong><br><strong>x − y = 2</strong></p>
+        <div class="choices" id="q1">
+          <div class="choice" onclick="answer('q1','A','C','Add the equations: 2x = 10 → x = 5. Then y = 8 − 5 = 3. Answer: (5, 3).')"><div class="choice-letter">A</div> (3, 5)</div>
+          <div class="choice" onclick="answer('q1','B','C','Add the equations: 2x = 10 → x = 5. Then y = 8 − 5 = 3. Answer: (5, 3).')"><div class="choice-letter">B</div> (4, 4)</div>
+          <div class="choice" onclick="answer('q1','C','C','Add the equations: 2x = 10 → x = 5. Then y = 8 − 5 = 3. Answer: (5, 3).')"><div class="choice-letter">C</div> (5, 3)</div>
+          <div class="choice" onclick="answer('q1','D','C','Add the equations: 2x = 10 → x = 5. Then y = 8 − 5 = 3. Answer: (5, 3).')"><div class="choice-letter">D</div> (6, 2)</div>
+        </div>
+        <div class="explanation" id="exp-q1"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 2</span><span class="diff-tag med">Medium</span></div>
+      <div class="problem-body">
+        <p>A cashier has $5 bills and $10 bills totaling $185. There are 25 bills total. How many $10 bills does the cashier have?</p>
+        <div class="choices" id="q2">
+          <div class="choice" onclick="answer('q2','A','C','Let f = $5 bills, t = $10 bills. f + t = 25 and 5f + 10t = 185. Multiply first by −5: −5f − 5t = −125. Add: 5t = 60 → t = 12.')"><div class="choice-letter">A</div> 9</div>
+          <div class="choice" onclick="answer('q2','B','C','Let f = $5 bills, t = $10 bills. f + t = 25 and 5f + 10t = 185. Multiply first by −5: −5f − 5t = −125. Add: 5t = 60 → t = 12.')"><div class="choice-letter">B</div> 10</div>
+          <div class="choice" onclick="answer('q2','C','C','Let f = $5 bills, t = $10 bills. f + t = 25 and 5f + 10t = 185. Multiply first by −5: −5f − 5t = −125. Add: 5t = 60 → t = 12.')"><div class="choice-letter">C</div> 12</div>
+          <div class="choice" onclick="answer('q2','D','C','Let f = $5 bills, t = $10 bills. f + t = 25 and 5f + 10t = 185. Multiply first by −5: −5f − 5t = −125. Add: 5t = 60 → t = 12.')"><div class="choice-letter">D</div> 13</div>
+        </div>
+        <div class="explanation" id="exp-q2"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 3</span><span class="diff-tag hard">Hard</span></div>
+      <div class="problem-body">
+        <p>Two workers earn different hourly rates. Alex works 20 hours and Brianna works 15 hours for a combined $562.50. The next week Alex works 30 hours and Brianna works 10 hours for a combined $625.00. What is Brianna's hourly rate?</p>
+        <div class="choices" id="q3">
+          <div class="choice" onclick="answer('q3','A','C','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3: 40a + 30b = 1125 and 90a + 30b = 1875. Subtract: 50a = 750 → a = 15. Then b = 17.50.')"><div class="choice-letter">A</div> $12.50</div>
+          <div class="choice" onclick="answer('q3','B','C','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3: 40a + 30b = 1125 and 90a + 30b = 1875. Subtract: 50a = 750 → a = 15. Then b = 17.50.')"><div class="choice-letter">B</div> $15.00</div>
+          <div class="choice" onclick="answer('q3','C','C','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3: 40a + 30b = 1125 and 90a + 30b = 1875. Subtract: 50a = 750 → a = 15. Then b = 17.50.')"><div class="choice-letter">C</div> $17.50</div>
+          <div class="choice" onclick="answer('q3','D','C','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3: 40a + 30b = 1125 and 90a + 30b = 1875. Subtract: 50a = 750 → a = 15. Then b = 17.50.')"><div class="choice-letter">D</div> $18.75</div>
+        </div>
+        <div class="explanation" id="exp-q3"></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="lesson-footer">
+    <a class="nav-btn" href="2-substitution.html">← Substitution</a>
+    <span class="footer-indicator">Lesson 3 of 6 · Systems of Equations</span>
+    <a class="nav-btn primary" href="4-sat-shortcut.html">Next: SAT Shortcut →</a>
+  </div>
+</div>
+<script>
+  function answer(qid, chosen, correct, explanation) {
+    const container = document.getElementById(qid);
+    container.querySelectorAll('.choice').forEach(c => { c.classList.add('disabled'); if (c.querySelector('.choice-letter').textContent.trim() === correct) c.classList.add('correct'); });
+    if (chosen !== correct) container.querySelectorAll('.choice').forEach(c => { if (c.querySelector('.choice-letter').textContent.trim() === chosen) c.classList.add('wrong'); });
+    const exp = document.getElementById('exp-' + qid); exp.textContent = explanation; exp.style.display = 'block';
+  }
+  function toggleDiff(diff) {
+    const btn = document.querySelector('.diff-btn.' + diff); btn.classList.toggle('on');
+    document.querySelectorAll('.problem[data-diff="' + diff + '"]').forEach(p => { p.style.display = btn.classList.contains('on') ? 'block' : 'none'; });
+  }
+</script>
+</body>
+</html>

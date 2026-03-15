@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solving with Desmos | Josh Tutoring & Test Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; min-width: 250px; background: #042C53; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { padding: 24px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo a { text-decoration: none; }
+    .logo-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; line-height: 1.3; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .nav { flex: 1; padding: 12px 0; }
+    .domain-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 14px 18px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-item.active { background: rgba(55,138,221,0.18); color: #fff; border-left: 2px solid #378ADD; }
+    .nav-item.sub { padding-left: 32px; font-size: 12px; }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); min-width: 6px; }
+    .nav-item.active .nav-dot { background: #378ADD; }
+    .nav-item.done .nav-dot { background: #1D9E75; }
+    .progress-wrap { padding: 12px 18px 20px; }
+    .progress-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 4px; height: 4px; }
+    .progress-fill { height: 4px; border-radius: 4px; background: #378ADD; width: 83%; }
+    .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: #fff; border-bottom: 1px solid #e8eaf0; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { font-size: 13px; color: #888; }
+    .breadcrumb span { color: #185FA5; font-weight: 500; }
+    .content { padding: 36px 40px; max-width: 860px; }
+    .lesson-tag { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: #185FA5; font-weight: 500; margin-bottom: 8px; }
+    .lesson-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: #042C53; margin-bottom: 10px; line-height: 1.2; }
+    .lesson-desc { font-size: 15px; color: #555; line-height: 1.7; max-width: 620px; margin-bottom: 32px; }
+    .divider { height: 1px; background: #e8eaf0; margin: 28px 0; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .concept-box { background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .concept-box p { font-size: 14px; color: #0C447C; line-height: 1.7; }
+    .tip-box { background: #EAF3DE; border-left: 3px solid #3B6D11; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .tip-box p { font-size: 14px; color: #27500A; line-height: 1.7; }
+    .warning-box { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .warning-box p { font-size: 14px; color: #633806; line-height: 1.7; }
+    .steps-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .step-item { display: flex; gap: 14px; align-items: flex-start; }
+    .step-circle { min-width: 32px; height: 32px; border-radius: 50%; background: #185FA5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+    .step-text { font-size: 14px; color: #333; line-height: 1.65; padding-top: 5px; }
+    .step-text strong { color: #042C53; }
+    .step-text code { background: #e8f0fb; padding: 1px 6px; border-radius: 3px; font-size: 13px; font-family: monospace; color: #185FA5; }
+    .use-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px; border-radius: 10px; overflow: hidden; }
+    .use-table th { background: #042C53; color: #fff; padding: 12px 16px; text-align: left; font-weight: 500; }
+    .use-table td { padding: 12px 16px; border-bottom: 1px solid #e8eaf0; vertical-align: top; line-height: 1.6; }
+    .use-table tr:last-child td { border-bottom: none; }
+    .use-table tr:nth-child(even) td { background: #f8f9fc; }
+    .yes { color: #3B6D11; font-weight: 500; }
+    .no  { color: #A32D2D; font-weight: 500; }
+    .mock-desmos { background: #1e1e2e; border-radius: 12px; padding: 20px; margin-bottom: 20px; font-family: monospace; }
+    .mock-desmos .row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .mock-desmos .row:last-child { border-bottom: none; }
+    .mock-desmos .num { color: rgba(255,255,255,0.3); font-size: 13px; min-width: 20px; }
+    .mock-desmos .eq { font-size: 14px; }
+    .mock-desmos .eq.blue { color: #5b9cf6; }
+    .mock-desmos .eq.red { color: #f9706a; }
+    .mock-desmos .eq.result { color: #63d98a; }
+    .mock-desmos .label { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: auto; }
+    .lesson-footer { margin-top: 48px; padding: 20px 40px; background: #fff; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #dde; background: #fff; color: #333; text-decoration: none; display: inline-block; }
+    .nav-btn:hover { background: #f5f6fa; }
+    .nav-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .footer-indicator { font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo"><a href="../../index.html"><div class="logo-title">Josh Tutoring<br>&amp; Test Prep</div><div class="logo-sub">SAT Curriculum</div></a></div>
+  <div class="nav">
+    <div class="domain-label">Algebra — Systems of Equations</div>
+    <a class="nav-item sub done" href="1-what-is-a-system.html"><div class="nav-dot"></div> 1. What is a System?</a>
+    <a class="nav-item sub done" href="2-substitution.html"><div class="nav-dot"></div> 2. Substitution</a>
+    <a class="nav-item sub done" href="3-elimination.html"><div class="nav-dot"></div> 3. Elimination</a>
+    <a class="nav-item sub done" href="4-sat-shortcut.html"><div class="nav-dot"></div> 4. SAT Shortcut</a>
+    <a class="nav-item sub active" href="5-desmos.html"><div class="nav-dot"></div> 5. Solving with Desmos</a>
+    <a class="nav-item sub" href="6-mixed-practice.html"><div class="nav-dot"></div> 6. Mixed Practice</a>
+    <div class="domain-label">Other Topics</div>
+    <a class="nav-item" href="../../index.html"><div class="nav-dot"></div> ← Back to all topics</a>
+  </div>
+  <div class="progress-wrap"><div class="progress-label">Lesson 5 of 6</div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Algebra › Systems of Equations › <span>Solving with Desmos</span></div>
+    <div style="font-size:13px;color:#888;">Lesson 5 of 6</div>
+  </div>
+  <div class="content">
+    <div class="lesson-tag">Algebra · Systems of Equations · Lesson 5</div>
+    <h1 class="lesson-title">Solving Systems with Desmos</h1>
+    <p class="lesson-desc">The digital SAT includes a built-in Desmos graphing calculator. Knowing how to use it for systems of equations can save you significant time on test day — especially for checking answers or bypassing messy algebra.</p>
+
+    <div class="divider"></div>
+
+    <div class="section-title">What Is Desmos on the SAT?</div>
+    <div class="concept-box">
+      <p>The digital SAT (Bluebook) has a <strong>built-in Desmos graphing calculator</strong> available on the calculator-permitted section. You can access it by clicking the calculator icon in the top right during the test. It's the same Desmos you can practice with at <strong>desmos.com/calculator</strong>.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">How to Solve a System in Desmos</div>
+    <div class="steps-list">
+      <div class="step-item"><div class="step-circle">1</div><div class="step-text"><strong>Open Desmos</strong> during the test (calculator icon, top right of screen).</div></div>
+      <div class="step-item"><div class="step-circle">2</div><div class="step-text"><strong>Type the first equation</strong> exactly as written in the problem. Desmos accepts any form — <code>y = 2x + 1</code> or <code>3x + 2y = 12</code> both work.</div></div>
+      <div class="step-item"><div class="step-circle">3</div><div class="step-text"><strong>Press Enter</strong> and type the second equation in the next line.</div></div>
+      <div class="step-item"><div class="step-circle">4</div><div class="step-text"><strong>Click the intersection point</strong> where the two lines cross. Desmos will display the exact coordinates — that's your (x, y) solution!</div></div>
+      <div class="step-item"><div class="step-circle">5</div><div class="step-text">If the lines don't intersect (parallel), Desmos confirms <strong>no solution</strong>. If they overlap, it's <strong>infinitely many solutions</strong>.</div></div>
+    </div>
+
+    <div class="section-title">What It Looks Like</div>
+    <div class="mock-desmos">
+      <div class="row"><span class="num">1</span><span class="eq blue">y = 2x + 1</span><span class="label">line 1</span></div>
+      <div class="row"><span class="num">2</span><span class="eq red">3x + y = 16</span><span class="label">line 2</span></div>
+      <div class="row"><span class="num">3</span><span class="eq result">Intersection: (3, 7) ✓</span><span class="label">click the point</span></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">When to Use Desmos vs. Algebra</div>
+    <table class="use-table">
+      <thead><tr><th>Situation</th><th>Use Desmos?</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Problem asks for exact (x, y) values</td><td class="yes">Yes ✓</td><td>Click the intersection point for instant answer</td></tr>
+        <tr><td>Messy fractions or decimals in equations</td><td class="yes">Yes ✓</td><td>Desmos handles these without arithmetic errors</td></tr>
+        <tr><td>You want to check your algebraic answer</td><td class="yes">Yes ✓</td><td>Takes 20 seconds to verify</td></tr>
+        <tr><td>Problem asks "how many solutions?" with parameters (like find k)</td><td class="no">No ✗</td><td>Algebra required — Desmos can't solve for unknown constants</td></tr>
+        <tr><td>Problem asks for a combination like x + y</td><td class="no">No ✗</td><td>Use the SAT shortcut — much faster</td></tr>
+        <tr><td>Problem involves abstract/symbolic coefficients</td><td class="no">No ✗</td><td>Desmos needs actual numbers to graph</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warning-box"><p><strong>Don't rely on Desmos for everything.</strong> It won't help with conceptual questions about the number of solutions or problems with unknown parameters like k. Make sure you understand the algebra too — Desmos is a tool, not a replacement for understanding.</p></div>
+
+    <div class="tip-box"><p><strong>Practice tip:</strong> Go to <strong>desmos.com/calculator</strong> right now and type in a system of two equations. Click the intersection point. Get comfortable with it before test day so it feels automatic during the exam.</p></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Key Things to Remember on Test Day</div>
+    <div class="concept-box">
+      <p>
+        • Desmos is only available on the <strong>calculator section</strong> of the SAT — not the no-calculator section.<br><br>
+        • You can type equations in <strong>any form</strong> (slope-intercept, standard, etc.) — Desmos handles all of them.<br><br>
+        • <strong>Zoom out</strong> if you can't see the intersection point — use the minus button or scroll out.<br><br>
+        • The coordinates shown are exact — if Desmos shows (3, 7), that's your final answer. No rounding needed.
+      </p>
+    </div>
+
+  </div>
+  <div class="lesson-footer">
+    <a class="nav-btn" href="4-sat-shortcut.html">← SAT Shortcut</a>
+    <span class="footer-indicator">Lesson 5 of 6 · Systems of Equations</span>
+    <a class="nav-btn primary" href="6-mixed-practice.html">Next: Mixed Practice →</a>
+  </div>
+</div>
+</body>
+</html>

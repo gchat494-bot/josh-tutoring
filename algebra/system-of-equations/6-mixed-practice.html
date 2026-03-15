@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mixed Practice | Josh Tutoring & Test Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; min-width: 250px; background: #042C53; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { padding: 24px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo a { text-decoration: none; }
+    .logo-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; line-height: 1.3; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .nav { flex: 1; padding: 12px 0; }
+    .domain-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 14px 18px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-item.active { background: rgba(55,138,221,0.18); color: #fff; border-left: 2px solid #378ADD; }
+    .nav-item.sub { padding-left: 32px; font-size: 12px; }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); min-width: 6px; }
+    .nav-item.active .nav-dot { background: #378ADD; }
+    .nav-item.done .nav-dot { background: #1D9E75; }
+    .progress-wrap { padding: 12px 18px 20px; }
+    .progress-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 4px; height: 4px; }
+    .progress-fill { height: 4px; border-radius: 4px; background: #378ADD; width: 100%; }
+    .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: #fff; border-bottom: 1px solid #e8eaf0; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { font-size: 13px; color: #888; }
+    .breadcrumb span { color: #185FA5; font-weight: 500; }
+    .diff-filters { display: flex; gap: 6px; }
+    .diff-btn { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; cursor: pointer; border: 1px solid #dde; background: #f5f5f8; color: #888; }
+    .diff-btn.easy.on { background: #EAF3DE; color: #3B6D11; border-color: #97C459; }
+    .diff-btn.med.on  { background: #FAEEDA; color: #854F0B; border-color: #EF9F27; }
+    .diff-btn.hard.on { background: #FCEBEB; color: #A32D2D; border-color: #F09595; }
+    .content { padding: 36px 40px; max-width: 860px; }
+    .lesson-tag { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: #185FA5; font-weight: 500; margin-bottom: 8px; }
+    .lesson-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: #042C53; margin-bottom: 10px; line-height: 1.2; }
+    .lesson-desc { font-size: 15px; color: #555; line-height: 1.7; max-width: 620px; margin-bottom: 32px; }
+    .divider { height: 1px; background: #e8eaf0; margin: 28px 0; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .tip-box { background: #EAF3DE; border-left: 3px solid #3B6D11; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .tip-box p { font-size: 14px; color: #27500A; line-height: 1.7; }
+    .score-card { background: #fff; border: 1px solid #e8eaf0; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; }
+    .score-num { font-family: 'DM Serif Display', serif; font-size: 48px; color: #042C53; line-height: 1; }
+    .score-label { font-size: 13px; color: #888; margin-top: 4px; }
+    .score-breakdown { display: flex; gap: 16px; margin-left: auto; }
+    .score-item { text-align: center; }
+    .score-item-num { font-size: 20px; font-weight: 600; }
+    .score-item-label { font-size: 11px; color: #888; margin-top: 2px; }
+    .score-item.easy .score-item-num { color: #3B6D11; }
+    .score-item.med  .score-item-num { color: #854F0B; }
+    .score-item.hard .score-item-num { color: #A32D2D; }
+    .problem { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .problem-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8f9fc; border-bottom: 1px solid #e8eaf0; }
+    .problem-num { font-size: 13px; font-weight: 600; color: #333; }
+    .problem-meta { display: flex; gap: 8px; align-items: center; }
+    .diff-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .diff-tag.easy { background: #EAF3DE; color: #3B6D11; }
+    .diff-tag.med  { background: #FAEEDA; color: #854F0B; }
+    .diff-tag.hard { background: #FCEBEB; color: #A32D2D; }
+    .method-tag { font-size: 11px; color: #888; background: #f0f0f5; padding: 3px 10px; border-radius: 20px; }
+    .problem-body { padding: 16px; }
+    .problem-body p { font-size: 14px; color: #222; line-height: 1.7; margin-bottom: 14px; }
+    .choices { display: flex; flex-direction: column; gap: 8px; }
+    .choice { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1px solid #e0e2ea; border-radius: 8px; font-size: 14px; color: #333; cursor: pointer; transition: all 0.12s; }
+    .choice:hover { background: #f0f4ff; border-color: #b5d4f4; }
+    .choice.correct { background: #EAF3DE; border-color: #639922; color: #1e4d08; pointer-events: none; }
+    .choice.wrong   { background: #FCEBEB; border-color: #F09595; color: #791F1F; pointer-events: none; }
+    .choice.disabled { pointer-events: none; opacity: 0.6; }
+    .choice-letter { width: 26px; height: 26px; border-radius: 50%; background: #eef0f5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; min-width: 26px; color: #555; }
+    .choice.correct .choice-letter { background: #639922; color: #fff; }
+    .choice.wrong   .choice-letter { background: #E24B4A; color: #fff; }
+    .explanation { display: none; margin-top: 14px; padding: 12px 14px; background: #f0f4ff; border-radius: 8px; font-size: 13px; color: #0C447C; line-height: 1.65; border-left: 3px solid #185FA5; }
+    .spr-note { font-size: 12px; color: #888; font-style: italic; margin-bottom: 8px; }
+    .spr-input-wrap { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+    .spr-input { border: 1px solid #dde; border-radius: 8px; padding: 8px 14px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 160px; outline: none; }
+    .spr-submit { padding: 8px 16px; background: #185FA5; color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+    .complete-banner { background: #042C53; border-radius: 12px; padding: 28px 32px; margin-top: 32px; text-align: center; }
+    .complete-banner h2 { font-family: 'DM Serif Display', serif; font-size: 24px; color: #fff; margin-bottom: 8px; }
+    .complete-banner p { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 20px; }
+    .complete-btn { display: inline-block; padding: 10px 24px; background: #378ADD; color: #fff; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 500; }
+    .lesson-footer { margin-top: 48px; padding: 20px 40px; background: #fff; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #dde; background: #fff; color: #333; text-decoration: none; display: inline-block; }
+    .nav-btn:hover { background: #f5f6fa; }
+    .nav-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .footer-indicator { font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo"><a href="../../index.html"><div class="logo-title">Josh Tutoring<br>&amp; Test Prep</div><div class="logo-sub">SAT Curriculum</div></a></div>
+  <div class="nav">
+    <div class="domain-label">Algebra — Systems of Equations</div>
+    <a class="nav-item sub done" href="1-what-is-a-system.html"><div class="nav-dot"></div> 1. What is a System?</a>
+    <a class="nav-item sub done" href="2-substitution.html"><div class="nav-dot"></div> 2. Substitution</a>
+    <a class="nav-item sub done" href="3-elimination.html"><div class="nav-dot"></div> 3. Elimination</a>
+    <a class="nav-item sub done" href="4-sat-shortcut.html"><div class="nav-dot"></div> 4. SAT Shortcut</a>
+    <a class="nav-item sub done" href="5-desmos.html"><div class="nav-dot"></div> 5. Solving with Desmos</a>
+    <a class="nav-item sub active" href="6-mixed-practice.html"><div class="nav-dot"></div> 6. Mixed Practice</a>
+    <div class="domain-label">Other Topics</div>
+    <a class="nav-item" href="../../index.html"><div class="nav-dot"></div> ← Back to all topics</a>
+  </div>
+  <div class="progress-wrap"><div class="progress-label">Lesson 6 of 6</div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Algebra › Systems of Equations › <span>Mixed Practice</span></div>
+    <div class="diff-filters">
+      <button class="diff-btn easy on" onclick="toggleDiff('easy')">Easy</button>
+      <button class="diff-btn med on" onclick="toggleDiff('med')">Medium</button>
+      <button class="diff-btn hard on" onclick="toggleDiff('hard')">Hard</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="lesson-tag">Algebra · Systems of Equations · Lesson 6</div>
+    <h1 class="lesson-title">Mixed Practice</h1>
+    <p class="lesson-desc">Time to put it all together. These problems mix all methods — substitution, elimination, the SAT shortcut, and conceptual questions. For each problem, decide which method to use before solving.</p>
+
+    <div class="score-card">
+      <div><div class="score-num" id="score-num">0</div><div class="score-label">out of <span id="score-total">0</span> answered</div></div>
+      <div class="score-breakdown">
+        <div class="score-item easy"><div class="score-item-num" id="easy-score">0/4</div><div class="score-item-label">Easy</div></div>
+        <div class="score-item med"><div class="score-item-num" id="med-score">0/4</div><div class="score-item-label">Medium</div></div>
+        <div class="score-item hard"><div class="score-item-num" id="hard-score">0/4</div><div class="score-item-label">Hard</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box"><p><strong>Strategy reminder:</strong> Before solving, ask yourself — is a variable already isolated? (→ Substitution). Are both equations in Ax + By = C form? (→ Elimination). Does the question ask for x + y or a combination? (→ SAT Shortcut). Does the problem involve finding k for no/infinite solutions? (→ Algebra, compare slopes).</p></div>
+
+    <div class="divider"></div>
+    <div class="section-title">Easy Problems</div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 1</span><div class="problem-meta"><span class="diff-tag easy">Easy</span><span class="method-tag">Substitution</span></div></div>
+      <div class="problem-body">
+        <p>If <strong>y = 4x − 1</strong> and <strong>2x + y = 11</strong>, what is the value of x?</p>
+        <div class="choices" id="q1">
+          <div class="choice" onclick="answer('q1','A','B','easy','Substitute y = 4x − 1 into 2x + y = 11: 2x + 4x − 1 = 11 → 6x = 12 → x = 2.')"><div class="choice-letter">A</div> 1</div>
+          <div class="choice" onclick="answer('q1','B','B','easy','Substitute y = 4x − 1 into 2x + y = 11: 2x + 4x − 1 = 11 → 6x = 12 → x = 2.')"><div class="choice-letter">B</div> 2</div>
+          <div class="choice" onclick="answer('q1','C','B','easy','Substitute y = 4x − 1 into 2x + y = 11: 2x + 4x − 1 = 11 → 6x = 12 → x = 2.')"><div class="choice-letter">C</div> 3</div>
+          <div class="choice" onclick="answer('q1','D','B','easy','Substitute y = 4x − 1 into 2x + y = 11: 2x + 4x − 1 = 11 → 6x = 12 → x = 2.')"><div class="choice-letter">D</div> 4</div>
+        </div>
+        <div class="explanation" id="exp-q1"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 2</span><div class="problem-meta"><span class="diff-tag easy">Easy</span><span class="method-tag">Number of Solutions</span></div></div>
+      <div class="problem-body">
+        <p>How many solutions does this system have?<br><strong>y = 3x + 2</strong><br><strong>y = 3x − 5</strong></p>
+        <div class="choices" id="q2">
+          <div class="choice" onclick="answer('q2','A','A','easy','Both lines have slope 3 but different y-intercepts (2 and −5). Same slope, different intercept = parallel lines = no solution.')"><div class="choice-letter">A</div> 0</div>
+          <div class="choice" onclick="answer('q2','B','A','easy','Both lines have slope 3 but different y-intercepts (2 and −5). Same slope, different intercept = parallel lines = no solution.')"><div class="choice-letter">B</div> 1</div>
+          <div class="choice" onclick="answer('q2','C','A','easy','Both lines have slope 3 but different y-intercepts (2 and −5). Same slope, different intercept = parallel lines = no solution.')"><div class="choice-letter">C</div> 2</div>
+          <div class="choice" onclick="answer('q2','D','A','easy','Both lines have slope 3 but different y-intercepts (2 and −5). Same slope, different intercept = parallel lines = no solution.')"><div class="choice-letter">D</div> Infinitely many</div>
+        </div>
+        <div class="explanation" id="exp-q2"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 3</span><div class="problem-meta"><span class="diff-tag easy">Easy</span><span class="method-tag">Elimination</span></div></div>
+      <div class="problem-body">
+        <p>What is the value of y in the system below?<br><strong>3x + y = 14</strong><br><strong>3x − y = 8</strong></p>
+        <div class="choices" id="q3">
+          <div class="choice" onclick="answer('q3','A','C','easy','Subtract eq2 from eq1: 2y = 6 → y = 3.')"><div class="choice-letter">A</div> 1</div>
+          <div class="choice" onclick="answer('q3','B','C','easy','Subtract eq2 from eq1: 2y = 6 → y = 3.')"><div class="choice-letter">B</div> 2</div>
+          <div class="choice" onclick="answer('q3','C','C','easy','Subtract eq2 from eq1: 2y = 6 → y = 3.')"><div class="choice-letter">C</div> 3</div>
+          <div class="choice" onclick="answer('q3','D','C','easy','Subtract eq2 from eq1: 2y = 6 → y = 3.')"><div class="choice-letter">D</div> 6</div>
+        </div>
+        <div class="explanation" id="exp-q3"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 4</span><div class="problem-meta"><span class="diff-tag easy">Easy</span><span class="method-tag">SAT Shortcut</span></div></div>
+      <div class="problem-body">
+        <p>Given the system below, what is the value of <strong>2x</strong>?<br><strong>x + y = 10</strong><br><strong>x − y = 4</strong></p>
+        <div class="choices" id="q4">
+          <div class="choice" onclick="answer('q4','A','C','easy','Add the equations directly: 2x = 14. That\'s the answer — no need to find x and y separately!')"><div class="choice-letter">A</div> 6</div>
+          <div class="choice" onclick="answer('q4','B','C','easy','Add the equations directly: 2x = 14. That\'s the answer — no need to find x and y separately!')"><div class="choice-letter">B</div> 10</div>
+          <div class="choice" onclick="answer('q4','C','C','easy','Add the equations directly: 2x = 14. That\'s the answer — no need to find x and y separately!')"><div class="choice-letter">C</div> 14</div>
+          <div class="choice" onclick="answer('q4','D','C','easy','Add the equations directly: 2x = 14. That\'s the answer — no need to find x and y separately!')"><div class="choice-letter">D</div> 20</div>
+        </div>
+        <div class="explanation" id="exp-q4"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Medium Problems</div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 5</span><div class="problem-meta"><span class="diff-tag med">Medium</span><span class="method-tag">Word Problem</span></div></div>
+      <div class="problem-body">
+        <p>A gym charges a one-time registration fee plus a fixed monthly fee. After 3 months a member paid $105 total. After 7 months the same member paid $205 total. What is the monthly fee?</p>
+        <div class="choices" id="q5">
+          <div class="choice" onclick="answer('q5','A','C','med','Let r = registration, m = monthly. r + 3m = 105 and r + 7m = 205. Subtract: 4m = 100 → m = 25.')"><div class="choice-letter">A</div> $20</div>
+          <div class="choice" onclick="answer('q5','B','C','med','Let r = registration, m = monthly. r + 3m = 105 and r + 7m = 205. Subtract: 4m = 100 → m = 25.')"><div class="choice-letter">B</div> $22</div>
+          <div class="choice" onclick="answer('q5','C','C','med','Let r = registration, m = monthly. r + 3m = 105 and r + 7m = 205. Subtract: 4m = 100 → m = 25.')"><div class="choice-letter">C</div> $25</div>
+          <div class="choice" onclick="answer('q5','D','C','med','Let r = registration, m = monthly. r + 3m = 105 and r + 7m = 205. Subtract: 4m = 100 → m = 25.')"><div class="choice-letter">D</div> $30</div>
+        </div>
+        <div class="explanation" id="exp-q5"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 6</span><div class="problem-meta"><span class="diff-tag med">Medium</span><span class="method-tag">No Solution</span></div></div>
+      <div class="problem-body">
+        <p>For what value of <strong>k</strong> does the system have no solution?<br><strong>2x + 4y = 10</strong><br><strong>kx + 8y = 6</strong></p>
+        <p class="spr-note">Student-produced response — enter your answer below.</p>
+        <div class="spr-input-wrap">
+          <input class="spr-input" id="spr6" type="text" placeholder="k = ?"/>
+          <button class="spr-submit" onclick="checkSPR('spr6','4','exp-spr6','med','For no solution, slopes must match. Slope of eq1: −1/2. Slope of eq2: −k/8. Set equal: k/8 = 1/2 → k = 4. Check intercepts differ: 10/4 ≠ 6/8. Confirmed.')">Check</button>
+        </div>
+        <div class="explanation" id="exp-spr6"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 7</span><div class="problem-meta"><span class="diff-tag med">Medium</span><span class="method-tag">Substitution</span></div></div>
+      <div class="problem-body">
+        <p>In the system below, what is the value of <strong>y</strong>?<br><strong>x = 2y + 3</strong><br><strong>3x − 4y = 17</strong></p>
+        <div class="choices" id="q7">
+          <div class="choice" onclick="answer('q7','A','C','med','Substitute x = 2y + 3 into 3x − 4y = 17: 3(2y + 3) − 4y = 17 → 6y + 9 − 4y = 17 → 2y = 8 → y = 4.')"><div class="choice-letter">A</div> 2</div>
+          <div class="choice" onclick="answer('q7','B','C','med','Substitute x = 2y + 3 into 3x − 4y = 17: 3(2y + 3) − 4y = 17 → 6y + 9 − 4y = 17 → 2y = 8 → y = 4.')"><div class="choice-letter">B</div> 3</div>
+          <div class="choice" onclick="answer('q7','C','C','med','Substitute x = 2y + 3 into 3x − 4y = 17: 3(2y + 3) − 4y = 17 → 6y + 9 − 4y = 17 → 2y = 8 → y = 4.')"><div class="choice-letter">C</div> 4</div>
+          <div class="choice" onclick="answer('q7','D','C','med','Substitute x = 2y + 3 into 3x − 4y = 17: 3(2y + 3) − 4y = 17 → 6y + 9 − 4y = 17 → 2y = 8 → y = 4.')"><div class="choice-letter">D</div> 5</div>
+        </div>
+        <div class="explanation" id="exp-q7"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 8</span><div class="problem-meta"><span class="diff-tag med">Medium</span><span class="method-tag">SAT Shortcut</span></div></div>
+      <div class="problem-body">
+        <p>Given the system, what is the value of <strong>5x + y</strong>?<br><strong>3x + y = 14</strong><br><strong>2x − y = 6</strong></p>
+        <div class="choices" id="q8">
+          <div class="choice" onclick="answer('q8','A','D','med','Add the equations: 5x = 20. But we need 5x + y, not 5x. Solve: x = 4, then y = 14 − 12 = 2. So 5x + y = 20 + 2 = 22. Alternatively notice 5x + y = (3x + y) + 2x = 14 + 2(4) = 22.')"><div class="choice-letter">A</div> 18</div>
+          <div class="choice" onclick="answer('q8','B','D','med','Add the equations: 5x = 20. But we need 5x + y, not 5x. Solve: x = 4, then y = 14 − 12 = 2. So 5x + y = 20 + 2 = 22.')"><div class="choice-letter">B</div> 20</div>
+          <div class="choice" onclick="answer('q8','C','D','med','Add the equations: 5x = 20. But we need 5x + y, not 5x. Solve: x = 4, then y = 14 − 12 = 2. So 5x + y = 20 + 2 = 22.')"><div class="choice-letter">C</div> 21</div>
+          <div class="choice" onclick="answer('q8','D','D','med','Add the equations: 5x = 20. Solve: x = 4. Back-sub: y = 2. So 5x + y = 22.')"><div class="choice-letter">D</div> 22</div>
+        </div>
+        <div class="explanation" id="exp-q8"></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Hard Problems</div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 9</span><div class="problem-meta"><span class="diff-tag hard">Hard</span><span class="method-tag">Infinitely Many Solutions</span></div></div>
+      <div class="problem-body">
+        <p>The system below has infinitely many solutions. What is the value of <strong>ab</strong>?<br><strong>ax + 6y = 12</strong><br><strong>4x + by = 24</strong></p>
+        <div class="choices" id="q9">
+          <div class="choice" onclick="answer('q9','A','B','hard','For infinitely many solutions, eq2 must be a multiple of eq1. Multiply eq1 by 2: 2ax + 12y = 24. Match with eq2: 2a = 4 → a = 2 and b = 12. So ab = 24.')"><div class="choice-letter">A</div> 12</div>
+          <div class="choice" onclick="answer('q9','B','B','hard','For infinitely many solutions, eq2 must be a multiple of eq1. Multiply eq1 by 2: 2ax + 12y = 24. Match with eq2: 2a = 4 → a = 2 and b = 12. So ab = 24.')"><div class="choice-letter">B</div> 24</div>
+          <div class="choice" onclick="answer('q9','C','B','hard','For infinitely many solutions, eq2 must be a multiple of eq1. Multiply eq1 by 2: 2ax + 12y = 24. Match with eq2: 2a = 4 → a = 2 and b = 12. So ab = 24.')"><div class="choice-letter">C</div> 36</div>
+          <div class="choice" onclick="answer('q9','D','B','hard','For infinitely many solutions, eq2 must be a multiple of eq1. Multiply eq1 by 2: 2ax + 12y = 24. Match with eq2: 2a = 4 → a = 2 and b = 12. So ab = 24.')"><div class="choice-letter">D</div> 48</div>
+        </div>
+        <div class="explanation" id="exp-q9"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 10</span><div class="problem-meta"><span class="diff-tag hard">Hard</span><span class="method-tag">Multi-Step</span></div></div>
+      <div class="problem-body">
+        <p>Two workers earn different hourly rates. Alex works 20 hours and Brianna works 15 hours for a combined $562.50. The next week Alex works 30 hours and Brianna works 10 hours for $625.00. What is Alex's hourly rate?</p>
+        <div class="choices" id="q10">
+          <div class="choice" onclick="answer('q10','A','C','hard','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3, then subtract: 50a = 750 → a = $15.')"><div class="choice-letter">A</div> $12.50</div>
+          <div class="choice" onclick="answer('q10','B','C','hard','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3, then subtract: 50a = 750 → a = $15.')"><div class="choice-letter">B</div> $13.75</div>
+          <div class="choice" onclick="answer('q10','C','C','hard','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3, then subtract: 50a = 750 → a = $15.')"><div class="choice-letter">C</div> $15.00</div>
+          <div class="choice" onclick="answer('q10','D','C','hard','20a + 15b = 562.50 and 30a + 10b = 625. Multiply eq1 by 2 and eq2 by 3, then subtract: 50a = 750 → a = $15.')"><div class="choice-letter">D</div> $17.50</div>
+        </div>
+        <div class="explanation" id="exp-q10"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 11</span><div class="problem-meta"><span class="diff-tag hard">Hard</span><span class="method-tag">Intersection + Substitution</span></div></div>
+      <div class="problem-body">
+        <p>In the xy-plane, line p has equation <strong>2x + y = 8</strong> and line q has equation <strong>x − y = 1</strong>. A third line r passes through the intersection of p and q and has a y-intercept of 0. What is the slope of line r?</p>
+        <div class="choices" id="q11">
+          <div class="choice" onclick="answer('q11','A','C','hard','Find intersection: add equations: 3x = 9 → x = 3, y = 2. Line r passes through (3, 2) with y-intercept 0, so it passes through (0, 0). Slope = (2−0)/(3−0) = 2/3.')"><div class="choice-letter">A</div> 1/2</div>
+          <div class="choice" onclick="answer('q11','B','C','hard','Find intersection: add equations: 3x = 9 → x = 3, y = 2. Line r passes through (3, 2) with y-intercept 0, so it passes through (0, 0). Slope = (2−0)/(3−0) = 2/3.')"><div class="choice-letter">B</div> 3/5</div>
+          <div class="choice" onclick="answer('q11','C','C','hard','Find intersection: add equations: 3x = 9 → x = 3, y = 2. Line r passes through (3, 2) with y-intercept 0, so it passes through (0, 0). Slope = (2−0)/(3−0) = 2/3.')"><div class="choice-letter">C</div> 2/3</div>
+          <div class="choice" onclick="answer('q11','D','C','hard','Find intersection: add equations: 3x = 9 → x = 3, y = 2. Line r passes through (3, 2) with y-intercept 0, so it passes through (0, 0). Slope = (2−0)/(3−0) = 2/3.')"><div class="choice-letter">D</div> 3/2</div>
+        </div>
+        <div class="explanation" id="exp-q11"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 12</span><div class="problem-meta"><span class="diff-tag hard">Hard</span><span class="method-tag">Abstract Parameters</span></div></div>
+      <div class="problem-body">
+        <p>For what value of k will the system below have exactly one solution where <strong>x = 0</strong>?<br><strong>y = kx + 5</strong><br><strong>2x + y = 5</strong></p>
+        <div class="choices" id="q12">
+          <div class="choice" onclick="answer('q12','A','A','hard','If x = 0, both equations give y = 5, so (0, 5) always satisfies both equations regardless of k — as long as the lines are different. When k = −2, both lines become y = −2x + 5 (the same line), giving infinitely many solutions. So for exactly one solution: any k ≠ −2.')"><div class="choice-letter">A</div> Any value of k except −2</div>
+          <div class="choice" onclick="answer('q12','B','A','hard','If x = 0, both equations give y = 5, so (0, 5) always satisfies both equations regardless of k — as long as the lines are different. When k = −2, y = kx + 5 becomes the same as 2x + y = 5, giving infinitely many solutions.')"><div class="choice-letter">B</div> k = −2 only</div>
+          <div class="choice" onclick="answer('q12','C','A','hard','If x = 0, both equations give y = 5, so (0, 5) always satisfies both equations for any k ≠ −2.')"><div class="choice-letter">C</div> k = 0 only</div>
+          <div class="choice" onclick="answer('q12','D','A','hard','(0, 5) satisfies both equations for any k ≠ −2, so there are many values of k that work.')"><div class="choice-letter">D</div> No value of k</div>
+        </div>
+        <div class="explanation" id="exp-q12"></div>
+      </div>
+    </div>
+
+    <div class="complete-banner">
+      <h2>Topic Complete!</h2>
+      <p>You've finished all 6 lessons on Systems of Two Linear Equations. Ready to move on to the next topic?</p>
+      <a class="complete-btn" href="../../index.html">← Back to All Topics</a>
+    </div>
+
+  </div>
+  <div class="lesson-footer">
+    <a class="nav-btn" href="5-desmos.html">← Solving with Desmos</a>
+    <span class="footer-indicator">Lesson 6 of 6 · Systems of Equations</span>
+    <a class="nav-btn primary" href="../../index.html">Back to Topics →</a>
+  </div>
+</div>
+<script>
+  const scores = { easy: {correct:0, total:4}, med: {correct:0, total:4}, hard: {correct:0, total:4} };
+  let totalAnswered = 0, totalCorrect = 0;
+
+  function updateScore() {
+    document.getElementById('score-num').textContent = totalCorrect;
+    document.getElementById('score-total').textContent = totalAnswered;
+    document.getElementById('easy-score').textContent = scores.easy.correct + '/' + scores.easy.total;
+    document.getElementById('med-score').textContent = scores.med.correct + '/' + scores.med.total;
+    document.getElementById('hard-score').textContent = scores.hard.correct + '/' + scores.hard.total;
+  }
+
+  function answer(qid, chosen, correct, diff, explanation) {
+    const container = document.getElementById(qid);
+    if (container.querySelector('.correct') || container.querySelector('.wrong')) return;
+    container.querySelectorAll('.choice').forEach(c => { c.classList.add('disabled'); if (c.querySelector('.choice-letter').textContent.trim() === correct) c.classList.add('correct'); });
+    if (chosen !== correct) container.querySelectorAll('.choice').forEach(c => { if (c.querySelector('.choice-letter').textContent.trim() === chosen) c.classList.add('wrong'); });
+    totalAnswered++;
+    if (chosen === correct) { totalCorrect++; scores[diff].correct++; }
+    const exp = document.getElementById('exp-' + qid); exp.textContent = explanation; exp.style.display = 'block';
+    updateScore();
+  }
+
+  function checkSPR(inputId, correct, expId, diff, explanation) {
+    const input = document.getElementById(inputId);
+    const exp = document.getElementById(expId);
+    if (input.disabled) return;
+    const isCorrect = input.value.trim() === correct;
+    input.style.borderColor = isCorrect ? '#639922' : '#E24B4A';
+    input.style.background = isCorrect ? '#EAF3DE' : '#FCEBEB';
+    exp.textContent = (isCorrect ? '✓ Correct! ' : '✗ Not quite. ') + explanation;
+    exp.style.display = 'block';
+    input.disabled = true;
+    totalAnswered++;
+    if (isCorrect) { totalCorrect++; scores[diff].correct++; }
+    updateScore();
+  }
+
+  function toggleDiff(diff) {
+    const btn = document.querySelector('.diff-btn.' + diff); btn.classList.toggle('on');
+    document.querySelectorAll('.problem[data-diff="' + diff + '"]').forEach(p => { p.style.display = btn.classList.contains('on') ? 'block' : 'none'; });
+  }
+</script>
+</body>
+</html>

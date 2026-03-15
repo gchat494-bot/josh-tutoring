@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAT Shortcut | Josh Tutoring & Test Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; min-width: 250px; background: #042C53; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { padding: 24px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo a { text-decoration: none; }
+    .logo-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; line-height: 1.3; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .nav { flex: 1; padding: 12px 0; }
+    .domain-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 14px 18px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-item.active { background: rgba(55,138,221,0.18); color: #fff; border-left: 2px solid #378ADD; }
+    .nav-item.sub { padding-left: 32px; font-size: 12px; }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); min-width: 6px; }
+    .nav-item.active .nav-dot { background: #378ADD; }
+    .nav-item.done .nav-dot { background: #1D9E75; }
+    .progress-wrap { padding: 12px 18px 20px; }
+    .progress-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 4px; height: 4px; }
+    .progress-fill { height: 4px; border-radius: 4px; background: #378ADD; width: 66%; }
+    .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: #fff; border-bottom: 1px solid #e8eaf0; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { font-size: 13px; color: #888; }
+    .breadcrumb span { color: #185FA5; font-weight: 500; }
+    .diff-filters { display: flex; gap: 6px; }
+    .diff-btn { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; cursor: pointer; border: 1px solid #dde; background: #f5f5f8; color: #888; }
+    .diff-btn.easy.on { background: #EAF3DE; color: #3B6D11; border-color: #97C459; }
+    .diff-btn.med.on  { background: #FAEEDA; color: #854F0B; border-color: #EF9F27; }
+    .diff-btn.hard.on { background: #FCEBEB; color: #A32D2D; border-color: #F09595; }
+    .content { padding: 36px 40px; max-width: 860px; }
+    .lesson-tag { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: #185FA5; font-weight: 500; margin-bottom: 8px; }
+    .lesson-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: #042C53; margin-bottom: 10px; line-height: 1.2; }
+    .lesson-desc { font-size: 15px; color: #555; line-height: 1.7; max-width: 620px; margin-bottom: 32px; }
+    .divider { height: 1px; background: #e8eaf0; margin: 28px 0; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .concept-box { background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .concept-box p { font-size: 14px; color: #0C447C; line-height: 1.7; }
+    .concept-box code { background: rgba(24,95,165,0.12); padding: 1px 6px; border-radius: 3px; font-size: 13px; font-family: monospace; }
+    .tip-box { background: #EAF3DE; border-left: 3px solid #3B6D11; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .tip-box p { font-size: 14px; color: #27500A; line-height: 1.7; }
+    .warning-box { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .warning-box p { font-size: 14px; color: #633806; line-height: 1.7; }
+    .shortcut-card { background: #042C53; border-radius: 12px; padding: 24px 28px; margin-bottom: 20px; }
+    .shortcut-card h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: #fff; margin-bottom: 10px; }
+    .shortcut-card p { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 12px; }
+    .shortcut-card code { background: rgba(255,255,255,0.12); color: #fff; padding: 2px 7px; border-radius: 4px; font-size: 13px; }
+    .example-box { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .example-header { background: #f5f6fa; border-bottom: 1px solid #e8eaf0; padding: 10px 16px; font-size: 12px; font-weight: 600; color: #555; letter-spacing: 0.05em; text-transform: uppercase; }
+    .example-body { padding: 18px; }
+    .example-equations { background: #f0f4ff; border-radius: 8px; padding: 12px 16px; font-family: monospace; font-size: 15px; color: #042C53; margin-bottom: 16px; line-height: 1.9; }
+    .step { display: flex; gap: 12px; margin-bottom: 12px; font-size: 14px; color: #333; line-height: 1.6; }
+    .step-num { min-width: 24px; height: 24px; background: #185FA5; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-top: 1px; }
+    .step-answer { font-weight: 600; color: #185FA5; font-size: 15px; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .compare-card { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; padding: 18px; }
+    .compare-card.slow { border-top: 3px solid #E24B4A; }
+    .compare-card.fast { border-top: 3px solid #639922; }
+    .compare-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .compare-card.slow h4 { color: #A32D2D; }
+    .compare-card.fast h4 { color: #3B6D11; }
+    .compare-card p { font-size: 13px; color: #555; line-height: 1.7; font-family: monospace; }
+    .problem { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+    .problem-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f8f9fc; border-bottom: 1px solid #e8eaf0; }
+    .problem-num { font-size: 13px; font-weight: 600; color: #333; }
+    .diff-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .diff-tag.easy { background: #EAF3DE; color: #3B6D11; }
+    .diff-tag.med  { background: #FAEEDA; color: #854F0B; }
+    .diff-tag.hard { background: #FCEBEB; color: #A32D2D; }
+    .problem-body { padding: 16px; }
+    .problem-body p { font-size: 14px; color: #222; line-height: 1.7; margin-bottom: 14px; }
+    .choices { display: flex; flex-direction: column; gap: 8px; }
+    .choice { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border: 1px solid #e0e2ea; border-radius: 8px; font-size: 14px; color: #333; cursor: pointer; transition: all 0.12s; }
+    .choice:hover { background: #f0f4ff; border-color: #b5d4f4; }
+    .choice.correct { background: #EAF3DE; border-color: #639922; color: #1e4d08; pointer-events: none; }
+    .choice.wrong   { background: #FCEBEB; border-color: #F09595; color: #791F1F; pointer-events: none; }
+    .choice.disabled { pointer-events: none; opacity: 0.6; }
+    .choice-letter { width: 26px; height: 26px; border-radius: 50%; background: #eef0f5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; min-width: 26px; color: #555; }
+    .choice.correct .choice-letter { background: #639922; color: #fff; }
+    .choice.wrong   .choice-letter { background: #E24B4A; color: #fff; }
+    .explanation { display: none; margin-top: 14px; padding: 12px 14px; background: #f0f4ff; border-radius: 8px; font-size: 13px; color: #0C447C; line-height: 1.65; border-left: 3px solid #185FA5; }
+    .lesson-footer { margin-top: 48px; padding: 20px 40px; background: #fff; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #dde; background: #fff; color: #333; text-decoration: none; display: inline-block; }
+    .nav-btn:hover { background: #f5f6fa; }
+    .nav-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .footer-indicator { font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo"><a href="../../index.html"><div class="logo-title">Josh Tutoring<br>&amp; Test Prep</div><div class="logo-sub">SAT Curriculum</div></a></div>
+  <div class="nav">
+    <div class="domain-label">Algebra — Systems of Equations</div>
+    <a class="nav-item sub done" href="1-what-is-a-system.html"><div class="nav-dot"></div> 1. What is a System?</a>
+    <a class="nav-item sub done" href="2-substitution.html"><div class="nav-dot"></div> 2. Substitution</a>
+    <a class="nav-item sub done" href="3-elimination.html"><div class="nav-dot"></div> 3. Elimination</a>
+    <a class="nav-item sub active" href="4-sat-shortcut.html"><div class="nav-dot"></div> 4. SAT Shortcut</a>
+    <a class="nav-item sub" href="5-desmos.html"><div class="nav-dot"></div> 5. Solving with Desmos</a>
+    <a class="nav-item sub" href="6-mixed-practice.html"><div class="nav-dot"></div> 6. Mixed Practice</a>
+    <div class="domain-label">Other Topics</div>
+    <a class="nav-item" href="../../index.html"><div class="nav-dot"></div> ← Back to all topics</a>
+  </div>
+  <div class="progress-wrap"><div class="progress-label">Lesson 4 of 6</div><div class="progress-track"><div class="progress-fill"></div></div></div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Algebra › Systems of Equations › <span>SAT Shortcut</span></div>
+    <div class="diff-filters">
+      <button class="diff-btn easy on" onclick="toggleDiff('easy')">Easy</button>
+      <button class="diff-btn med on" onclick="toggleDiff('med')">Medium</button>
+      <button class="diff-btn hard on" onclick="toggleDiff('hard')">Hard</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="lesson-tag">Algebra · Systems of Equations · Lesson 4</div>
+    <h1 class="lesson-title">The SAT Combination Shortcut</h1>
+    <p class="lesson-desc">This is one of the most powerful time-saving tricks on the entire SAT. Instead of solving for x and y individually, you can often find a combination like x + y or 2x − y in a single step.</p>
+
+    <div class="divider"></div>
+
+    <div class="shortcut-card">
+      <h3>The Key Insight</h3>
+      <p>When the SAT asks for a <strong>combination</strong> of variables — like <code>x + y</code>, <code>2x − y</code>, or <code>3x + 2y</code> — you don't always need to solve for x and y separately. You can often get the answer by simply <strong>adding or subtracting the original equations directly</strong>.</p>
+      <p>This can turn a multi-step problem into a one-step problem. Recognize it, use it, and move on.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Side-by-Side Comparison</div>
+    <div class="compare-grid">
+      <div class="compare-card slow">
+        <h4>Slow Way (Solve for x and y individually)</h4>
+        <p>3x + 2y = 20<br>x − 2y = 4<br><br>→ Add: 4x = 24 → x = 6<br>→ Back-sub: y = 1<br>→ Then compute: x + y = 7<br><br>4 steps total</p>
+      </div>
+      <div class="compare-card fast">
+        <h4>Fast Way (SAT Shortcut)</h4>
+        <p>3x + 2y = 20<br>x − 2y = 4<br><br>→ Add directly:<br>(3x + x) + (2y − 2y) = 24<br>→ 4x = 24... wait, question asks for x + y<br><br>Subtract instead: 2x + 4y = 16 → x + 2y = 8... try different combos!</p>
+      </div>
+    </div>
+
+    <div class="warning-box"><p><strong>Important:</strong> The shortcut only works when the combination you need matches what you get by adding or subtracting the equations. Always check what the problem is <em>actually asking for</em> before choosing your operation.</p></div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Worked Example — Classic SAT Shortcut</div>
+    <div class="example-box">
+      <div class="example-header">Example: What is the value of x + y?</div>
+      <div class="example-body">
+        <div class="example-equations">3x − 2y = 14<br>5x + 2y = 34</div>
+        <div class="step"><div class="step-num">1</div><div>The question asks for <strong>x + y</strong>. Look at what happens when you add the equations.</div></div>
+        <div class="step"><div class="step-num">2</div><div>Add: <strong>(3x + 5x) + (−2y + 2y) = 14 + 34 → 8x = 48 → x = 6</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div>Back-sub to find y: <strong>3(6) − 2y = 14 → 2y = 4 → y = 2</strong></div></div>
+        <div class="step"><div class="step-num">✓</div><div class="step-answer">x + y = 6 + 2 = 8</div></div>
+      </div>
+    </div>
+
+    <div class="example-box">
+      <div class="example-header">Example: What is the value of 2x + y? (True one-step shortcut)</div>
+      <div class="example-body">
+        <div class="example-equations">3x + y = 15<br>x − y = 5</div>
+        <div class="step"><div class="step-num">1</div><div>The question asks for <strong>2x + y</strong> (not x and y separately). Try subtracting equation 2 from equation 1.</div></div>
+        <div class="step"><div class="step-num">2</div><div>Subtract eq 2 from eq 1: <strong>(3x − x) + (y − (−y)) = 15 − 5 → 2x + 2y = 10</strong>. Not quite.</div></div>
+        <div class="step"><div class="step-num">3</div><div>Try adding: <strong>(3x + x) + (y − y) = 20 → 4x = 20 → x = 5</strong>. Then <strong>y = 0</strong>. So <strong>2x + y = 10</strong>.</div></div>
+        <div class="step"><div class="step-num">💡</div><div>When no single operation gives the combination, just solve normally and compute the combination at the end.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box"><p><strong>Pattern recognition:</strong> On the SAT, if you see a system of two equations and the question asks for something like <code>x + y</code>, <code>x − y</code>, or <code>ax + by</code> — immediately try adding and subtracting the two equations and see if the result matches what's being asked. This appears on almost every SAT!</p></div>
+
+    <div class="divider"></div>
+    <div class="section-title">Practice Problems</div>
+
+    <div class="problem" data-diff="easy">
+      <div class="problem-header"><span class="problem-num">Problem 1</span><span class="diff-tag easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Given the system below, what is the value of <strong>x + y</strong>?<br><strong>2x + y = 11</strong><br><strong>x − y = 1</strong></p>
+        <div class="choices" id="q1">
+          <div class="choice" onclick="answer('q1','A','C','Add the equations: 3x = 12 → x = 4. Then y = 11 − 8 = 3. So x + y = 7. Or: subtract eq2 from eq1: x + 2y = 10. Still need to solve. Solve fully: x = 4, y = 3, x + y = 7.')"><div class="choice-letter">A</div> 5</div>
+          <div class="choice" onclick="answer('q1','B','C','Add the equations: 3x = 12 → x = 4. Then y = 11 − 8 = 3. So x + y = 7. Or: subtract eq2 from eq1: x + 2y = 10. Still need to solve. Solve fully: x = 4, y = 3, x + y = 7.')"><div class="choice-letter">B</div> 6</div>
+          <div class="choice" onclick="answer('q1','C','C','Add the equations: 3x = 12 → x = 4. Then y = 11 − 8 = 3. So x + y = 7. Or: subtract eq2 from eq1: x + 2y = 10. Still need to solve. Solve fully: x = 4, y = 3, x + y = 7.')"><div class="choice-letter">C</div> 7</div>
+          <div class="choice" onclick="answer('q1','D','C','Add the equations: 3x = 12 → x = 4. Then y = 11 − 8 = 3. So x + y = 7.')"><div class="choice-letter">D</div> 8</div>
+        </div>
+        <div class="explanation" id="exp-q1"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="med">
+      <div class="problem-header"><span class="problem-num">Problem 2</span><span class="diff-tag med">Medium</span></div>
+      <div class="problem-body">
+        <p>Given the system below, what is the value of <strong>4x</strong>?<br><strong>3x + 2y = 17</strong><br><strong>x − 2y = 3</strong></p>
+        <div class="choices" id="q2">
+          <div class="choice" onclick="answer('q2','A','D','Add the equations directly: (3x + x) + (2y − 2y) = 17 + 3 → 4x = 20. The shortcut gives the answer in one step!')"><div class="choice-letter">A</div> 8</div>
+          <div class="choice" onclick="answer('q2','B','D','Add the equations directly: (3x + x) + (2y − 2y) = 17 + 3 → 4x = 20. The shortcut gives the answer in one step!')"><div class="choice-letter">B</div> 14</div>
+          <div class="choice" onclick="answer('q2','C','D','Add the equations directly: (3x + x) + (2y − 2y) = 17 + 3 → 4x = 20. The shortcut gives the answer in one step!')"><div class="choice-letter">C</div> 16</div>
+          <div class="choice" onclick="answer('q2','D','D','Add the equations directly: (3x + x) + (2y − 2y) = 17 + 3 → 4x = 20. The shortcut gives the answer in one step!')"><div class="choice-letter">D</div> 20</div>
+        </div>
+        <div class="explanation" id="exp-q2"></div>
+      </div>
+    </div>
+
+    <div class="problem" data-diff="hard">
+      <div class="problem-header"><span class="problem-num">Problem 3</span><span class="diff-tag hard">Hard</span></div>
+      <div class="problem-body">
+        <p>Given the system below, what is the value of <strong>6x + 3y</strong>?<br><strong>2x + y = 9</strong><br><strong>x − y = 3</strong></p>
+        <div class="choices" id="q3">
+          <div class="choice" onclick="answer('q3','A','B','Notice that 6x + 3y = 3(2x + y). Since 2x + y = 9, multiply by 3: 6x + 3y = 27. This is a one-step shortcut — no need to solve for x and y!')"><div class="choice-letter">A</div> 21</div>
+          <div class="choice" onclick="answer('q3','B','B','Notice that 6x + 3y = 3(2x + y). Since 2x + y = 9, multiply by 3: 6x + 3y = 27. This is a one-step shortcut — no need to solve for x and y!')"><div class="choice-letter">B</div> 27</div>
+          <div class="choice" onclick="answer('q3','C','B','Notice that 6x + 3y = 3(2x + y). Since 2x + y = 9, multiply by 3: 6x + 3y = 27. This is a one-step shortcut — no need to solve for x and y!')"><div class="choice-letter">C</div> 33</div>
+          <div class="choice" onclick="answer('q3','D','B','Notice that 6x + 3y = 3(2x + y). Since 2x + y = 9, multiply by 3: 6x + 3y = 27. This is a one-step shortcut — no need to solve for x and y!')"><div class="choice-letter">D</div> 36</div>
+        </div>
+        <div class="explanation" id="exp-q3"></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="lesson-footer">
+    <a class="nav-btn" href="3-elimination.html">← Elimination</a>
+    <span class="footer-indicator">Lesson 4 of 6 · Systems of Equations</span>
+    <a class="nav-btn primary" href="5-desmos.html">Next: Solving with Desmos →</a>
+  </div>
+</div>
+<script>
+  function answer(qid, chosen, correct, explanation) {
+    const container = document.getElementById(qid);
+    container.querySelectorAll('.choice').forEach(c => { c.classList.add('disabled'); if (c.querySelector('.choice-letter').textContent.trim() === correct) c.classList.add('correct'); });
+    if (chosen !== correct) container.querySelectorAll('.choice').forEach(c => { if (c.querySelector('.choice-letter').textContent.trim() === chosen) c.classList.add('wrong'); });
+    const exp = document.getElementById('exp-' + qid); exp.textContent = explanation; exp.style.display = 'block';
+  }
+  function toggleDiff(diff) {
+    const btn = document.querySelector('.diff-btn.' + diff); btn.classList.toggle('on');
+    document.querySelectorAll('.problem[data-diff="' + diff + '"]').forEach(p => { p.style.display = btn.classList.contains('on') ? 'block' : 'none'; });
+  }
+</script>
+</body>
+</html>

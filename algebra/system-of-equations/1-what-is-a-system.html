@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What Is a System? | Josh Tutoring & Test Prep</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; display: flex; min-height: 100vh; }
+    .sidebar { width: 250px; min-width: 250px; background: #042C53; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; }
+    .logo { padding: 24px 18px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .logo a { text-decoration: none; }
+    .logo-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: #fff; line-height: 1.3; }
+    .logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+    .nav { flex: 1; padding: 12px 0; }
+    .domain-label { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 14px 18px 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 18px; font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; border-left: 2px solid transparent; transition: all 0.15s; }
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-item.active { background: rgba(55,138,221,0.18); color: #fff; border-left: 2px solid #378ADD; }
+    .nav-item.sub { padding-left: 32px; font-size: 12px; }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.18); min-width: 6px; }
+    .nav-item.active .nav-dot { background: #378ADD; }
+    .progress-wrap { padding: 12px 18px 20px; }
+    .progress-label { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .progress-track { background: rgba(255,255,255,0.1); border-radius: 4px; height: 4px; }
+    .progress-fill { height: 4px; border-radius: 4px; background: #378ADD; width: 8%; }
+    .main { margin-left: 250px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { background: #fff; border-bottom: 1px solid #e8eaf0; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { font-size: 13px; color: #888; }
+    .breadcrumb span { color: #185FA5; font-weight: 500; }
+    .content { padding: 36px 40px; max-width: 860px; }
+    .lesson-tag { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: #185FA5; font-weight: 500; margin-bottom: 8px; }
+    .lesson-title { font-family: 'DM Serif Display', serif; font-size: 32px; color: #042C53; margin-bottom: 10px; line-height: 1.2; }
+    .lesson-desc { font-size: 15px; color: #555; line-height: 1.7; max-width: 620px; margin-bottom: 32px; }
+    .divider { height: 1px; background: #e8eaf0; margin: 28px 0; }
+    .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .concept-box { background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .concept-box p { font-size: 14px; color: #0C447C; line-height: 1.7; }
+    .concept-box code { background: rgba(24,95,165,0.12); padding: 1px 6px; border-radius: 3px; font-size: 13px; font-family: monospace; }
+    .tip-box { background: #EAF3DE; border-left: 3px solid #3B6D11; border-radius: 0 8px 8px 0; padding: 16px 18px; margin-bottom: 14px; }
+    .tip-box p { font-size: 14px; color: #27500A; line-height: 1.7; }
+    .solutions-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; border-radius: 10px; overflow: hidden; }
+    .solutions-table th { background: #042C53; color: #fff; padding: 12px 16px; text-align: left; font-weight: 500; }
+    .solutions-table td { padding: 12px 16px; border-bottom: 1px solid #e8eaf0; }
+    .solutions-table tr:last-child td { border-bottom: none; }
+    .solutions-table tr:nth-child(even) td { background: #f8f9fc; }
+    .outcome-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+    .outcome-badge.one { background: #EAF3DE; color: #3B6D11; }
+    .outcome-badge.none { background: #FCEBEB; color: #A32D2D; }
+    .outcome-badge.inf { background: #E6F1FB; color: #185FA5; }
+    .visual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+    .visual-card { background: #fff; border: 1px solid #e8eaf0; border-radius: 10px; padding: 18px; text-align: center; }
+    .visual-card svg { margin-bottom: 12px; }
+    .visual-card-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
+    .visual-card-sub { font-size: 12px; color: #888; line-height: 1.5; }
+    .lesson-footer { margin-top: 48px; padding: 20px 40px; background: #fff; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid #dde; background: #fff; color: #333; font-family: 'DM Sans', sans-serif; text-decoration: none; display: inline-block; }
+    .nav-btn:hover { background: #f5f6fa; }
+    .nav-btn.primary { background: #185FA5; color: #fff; border-color: #185FA5; }
+    .nav-btn.primary:hover { background: #0C447C; }
+    .footer-indicator { font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="logo">
+    <a href="../../index.html">
+      <div class="logo-title">Josh Tutoring<br>&amp; Test Prep</div>
+      <div class="logo-sub">SAT Curriculum</div>
+    </a>
+  </div>
+  <div class="nav">
+    <div class="domain-label">Algebra — Systems of Equations</div>
+    <a class="nav-item sub active" href="1-what-is-a-system.html"><div class="nav-dot"></div> 1. What is a System?</a>
+    <a class="nav-item sub" href="2-substitution.html"><div class="nav-dot"></div> 2. Substitution</a>
+    <a class="nav-item sub" href="3-elimination.html"><div class="nav-dot"></div> 3. Elimination</a>
+    <a class="nav-item sub" href="4-sat-shortcut.html"><div class="nav-dot"></div> 4. SAT Shortcut</a>
+    <a class="nav-item sub" href="5-desmos.html"><div class="nav-dot"></div> 5. Solving with Desmos</a>
+    <a class="nav-item sub" href="6-mixed-practice.html"><div class="nav-dot"></div> 6. Mixed Practice</a>
+    <div class="domain-label">Other Topics</div>
+    <a class="nav-item" href="../../index.html"><div class="nav-dot"></div> ← Back to all topics</a>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Lesson 1 of 6</div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Algebra › Systems of Equations › <span>What is a System?</span></div>
+    <div style="font-size:13px;color:#888;">Lesson 1 of 6</div>
+  </div>
+
+  <div class="content">
+    <div class="lesson-tag">Algebra · Systems of Equations · Lesson 1</div>
+    <h1 class="lesson-title">What Is a System of Two Linear Equations?</h1>
+    <p class="lesson-desc">Before solving, you need to understand what a system actually is — and the three possible outcomes when two lines meet (or don't) on a graph.</p>
+
+    <div class="divider"></div>
+
+    <div class="section-title">The Core Idea</div>
+    <div class="concept-box">
+      <p>A <strong>system of two linear equations</strong> is a pair of equations with two unknowns — usually <code>x</code> and <code>y</code>. A <strong>solution</strong> is a single ordered pair <code>(x, y)</code> that makes <em>both</em> equations true at the same time. Graphically, it's the point where the two lines intersect.</p>
+    </div>
+
+    <div class="concept-box">
+      <p>A system looks like this:<br><br>
+      <code>ax + by = c</code><br>
+      <code>dx + ey = f</code><br><br>
+      where a, b, c, d, e, and f are constants. Your job is to find the (x, y) pair that satisfies both equations simultaneously.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Three Possible Outcomes</div>
+    <div class="visual-grid">
+      <div class="visual-card">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <line x1="10" y1="70" x2="90" y2="10" stroke="#185FA5" stroke-width="2"/>
+          <line x1="10" y1="20" x2="90" y2="60" stroke="#E24B4A" stroke-width="2"/>
+          <circle cx="50" cy="40" r="5" fill="#042C53"/>
+        </svg>
+        <div class="visual-card-title">One Solution</div>
+        <div class="visual-card-sub">Lines cross at exactly one point</div>
+      </div>
+      <div class="visual-card">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <line x1="10" y1="60" x2="90" y2="20" stroke="#185FA5" stroke-width="2"/>
+          <line x1="10" y1="70" x2="90" y2="30" stroke="#E24B4A" stroke-width="2"/>
+        </svg>
+        <div class="visual-card-title">No Solution</div>
+        <div class="visual-card-sub">Parallel lines — never meet</div>
+      </div>
+      <div class="visual-card">
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <line x1="10" y1="65" x2="90" y2="15" stroke="#185FA5" stroke-width="4"/>
+          <line x1="10" y1="65" x2="90" y2="15" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="6,4"/>
+        </svg>
+        <div class="visual-card-title">Infinitely Many</div>
+        <div class="visual-card-sub">Same line — overlap completely</div>
+      </div>
+    </div>
+
+    <table class="solutions-table">
+      <thead>
+        <tr>
+          <th>Outcome</th>
+          <th>Graphical Meaning</th>
+          <th>How to Identify</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="outcome-badge one">One solution</span></td>
+          <td>Lines intersect at exactly one point</td>
+          <td>Different slopes (m values)</td>
+        </tr>
+        <tr>
+          <td><span class="outcome-badge none">No solution</span></td>
+          <td>Lines are parallel — never intersect</td>
+          <td>Same slope, different y-intercepts</td>
+        </tr>
+        <tr>
+          <td><span class="outcome-badge inf">Infinitely many</span></td>
+          <td>Lines are the same line</td>
+          <td>Same slope AND same y-intercept</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <p><strong>SAT tip:</strong> To quickly identify the number of solutions, rewrite both equations in slope-intercept form <code>y = mx + b</code> and compare slopes and intercepts. This is one of the most tested concepts on the SAT — expect at least 1–2 questions per test!</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">What's Coming Next</div>
+    <div class="concept-box">
+      <p>In the next lessons you'll learn the two main algebraic methods for <em>solving</em> systems — <strong>Substitution</strong> and <strong>Elimination</strong> — plus a powerful SAT-specific shortcut and how to use Desmos on test day.</p>
+    </div>
+
+  </div>
+
+  <div class="lesson-footer">
+    <a class="nav-btn" href="../../index.html">← Back to topics</a>
+    <span class="footer-indicator">Lesson 1 of 6 · Systems of Equations</span>
+    <a class="nav-btn primary" href="2-substitution.html">Next: Substitution →</a>
+  </div>
+</div>
+</body>
+</html>

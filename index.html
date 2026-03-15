@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Josh Tutoring & Test Prep | SAT Math Curriculum</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F6F9; color: #1a1a2e; min-height: 100vh; }
+
+    .hero {
+      background: #042C53;
+      padding: 56px 48px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(55,138,221,0.12);
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #378ADD;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 40px;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      max-width: 520px;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 28px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+    }
+
+    .hero-stat-num {
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .hero-stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+
+    .main-content { padding: 40px 48px; max-width: 1100px; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: #042C53;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .domain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .domain-card {
+      background: #fff;
+      border: 1px solid #e8eaf0;
+      border-radius: 12px;
+      padding: 22px;
+      transition: all 0.15s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .domain-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
+
+    .domain-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .domain-card.algebra .domain-icon { background: #E6F1FB; }
+    .domain-card.advanced .domain-icon { background: #EAF3DE; }
+    .domain-card.problem .domain-icon { background: #FAEEDA; }
+    .domain-card.geometry .domain-icon { background: #FCEBEB; }
+
+    .domain-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #042C53;
+      margin-bottom: 6px;
+    }
+
+    .domain-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .domain-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .domain-progress-track {
+      flex: 1;
+      height: 4px;
+      background: #eef0f5;
+      border-radius: 4px;
+    }
+
+    .domain-progress-fill {
+      height: 4px;
+      border-radius: 4px;
+    }
+
+    .algebra .domain-progress-fill { background: #185FA5; }
+    .advanced .domain-progress-fill { background: #3B6D11; }
+    .problem .domain-progress-fill { background: #854F0B; }
+    .geometry .domain-progress-fill { background: #A32D2D; }
+
+    .domain-progress-label {
+      font-size: 11px;
+      color: #aaa;
+      white-space: nowrap;
+    }
+
+    .topics-section { margin-bottom: 48px; }
+
+    .topic-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .topic-row {
+      background: #fff;
+      border: 1px solid #e8eaf0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .topic-row:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-color: #b5d4f4; }
+
+    .topic-status {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      min-width: 28px;
+    }
+
+    .topic-status.done { background: #EAF3DE; color: #3B6D11; }
+    .topic-status.active { background: #E6F1FB; color: #185FA5; }
+    .topic-status.locked { background: #f0f0f5; color: #bbb; }
+
+    .topic-info { flex: 1; }
+
+    .topic-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a2e;
+      margin-bottom: 3px;
+    }
+
+    .topic-meta { font-size: 12px; color: #aaa; }
+
+    .topic-lessons {
+      font-size: 12px;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .topic-arrow { font-size: 16px; color: #ccc; }
+
+    .start-btn {
+      padding: 7px 16px;
+      background: #185FA5;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .start-btn:hover { background: #0C447C; }
+
+    .locked-btn {
+      padding: 7px 16px;
+      background: #f0f0f5;
+      color: #bbb;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">SAT Math Curriculum</div>
+  <h1 class="hero-title">Josh Tutoring &amp; Test Prep</h1>
+  <p class="hero-desc">A complete, topic-by-topic SAT math curriculum. Master every concept — from linear equations to trigonometry — with lessons, worked examples, and practice problems at every difficulty level.</p>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">4</div>
+      <div class="hero-stat-label">Domains</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">13</div>
+      <div class="hero-stat-label">Topics</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">100+</div>
+      <div class="hero-stat-label">Practice Problems</div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+
+  <!-- DOMAIN OVERVIEW -->
+  <div class="section-header">
+    <div class="section-title">Math Domains</div>
+    <div class="section-sub">4 domains · 13 topics total</div>
+  </div>
+
+  <div class="domain-grid">
+    <div class="domain-card algebra">
+      <div class="domain-icon">📐</div>
+      <div class="domain-name">Algebra</div>
+      <div class="domain-desc">Linear equations, functions, systems, and inequalities.</div>
+      <div class="domain-progress">
+        <div class="domain-progress-track"><div class="domain-progress-fill" style="width:20%"></div></div>
+        <div class="domain-progress-label">1 of 5 topics</div>
+      </div>
+    </div>
+    <div class="domain-card advanced">
+      <div class="domain-icon">🔢</div>
+      <div class="domain-name">Advanced Math</div>
+      <div class="domain-desc">Quadratics, polynomials, equivalent expressions, and more.</div>
+      <div class="domain-progress">
+        <div class="domain-progress-track"><div class="domain-progress-fill" style="width:0%"></div></div>
+        <div class="domain-progress-label">0 of 3 topics</div>
+      </div>
+    </div>
+    <div class="domain-card problem">
+      <div class="domain-icon">📊</div>
+      <div class="domain-name">Problem Solving</div>
+      <div class="domain-desc">Ratios, percentages, statistics, and data analysis.</div>
+      <div class="domain-progress">
+        <div class="domain-progress-track"><div class="domain-progress-fill" style="width:0%"></div></div>
+        <div class="domain-progress-label">0 of 3 topics</div>
+      </div>
+    </div>
+    <div class="domain-card geometry">
+      <div class="domain-icon">📏</div>
+      <div class="domain-name">Geometry &amp; Trig</div>
+      <div class="domain-desc">Area, volume, lines, angles, and trigonometry.</div>
+      <div class="domain-progress">
+        <div class="domain-progress-track"><div class="domain-progress-fill" style="width:0%"></div></div>
+        <div class="domain-progress-label">0 of 2 topics</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALGEBRA TOPICS -->
+  <div class="topics-section">
+    <div class="section-header">
+      <div class="section-title">Algebra</div>
+      <div class="section-sub">5 topics</div>
+    </div>
+    <div class="topic-list">
+      <a class="topic-row" href="algebra/systems-of-equations/1-what-is-a-system.html">
+        <div class="topic-status active">→</div>
+        <div class="topic-info">
+          <div class="topic-name">Systems of Two Linear Equations</div>
+          <div class="topic-meta">Substitution · Elimination · SAT Shortcuts · Desmos</div>
+        </div>
+        <div class="topic-lessons">6 lessons</div>
+        <span class="start-btn">Start</span>
+      </a>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info">
+          <div class="topic-name">Linear Equations in 1 Variable</div>
+          <div class="topic-meta">Coming soon</div>
+        </div>
+        <div class="topic-lessons">— lessons</div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info">
+          <div class="topic-name">Linear Equations in 2 Variables</div>
+          <div class="topic-meta">Coming soon</div>
+        </div>
+        <div class="topic-lessons">— lessons</div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info">
+          <div class="topic-name">Linear Functions</div>
+          <div class="topic-meta">Coming soon</div>
+        </div>
+        <div class="topic-lessons">— lessons</div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info">
+          <div class="topic-name">Linear Inequalities</div>
+          <div class="topic-meta">Coming soon</div>
+        </div>
+        <div class="topic-lessons">— lessons</div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADVANCED MATH -->
+  <div class="topics-section">
+    <div class="section-header">
+      <div class="section-title">Advanced Math</div>
+      <div class="section-sub">3 topics</div>
+    </div>
+    <div class="topic-list">
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info"><div class="topic-name">Equivalent Expressions</div><div class="topic-meta">Coming soon</div></div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info"><div class="topic-name">Nonlinear Functions</div><div class="topic-meta">Coming soon</div></div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+      <div class="topic-row">
+        <div class="topic-status locked">🔒</div>
+        <div class="topic-info"><div class="topic-name">Quadratic Equations</div><div class="topic-meta">Coming soon</div></div>
+        <span class="locked-btn">Coming soon</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
